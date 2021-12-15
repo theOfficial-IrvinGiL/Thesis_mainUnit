@@ -57,17 +57,23 @@ Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS)
 #define relayPin 6 //used for the relay pin
 
 //variable declarations are coded here
-char user_input[8];
-char contact_input[11];
-int addressOnEEPROM = 0;
-short setCursor_column = 0;
-short fixedNumberOfInputs = 0;
-char codeFromEEPROM[4];
-String adminpass [] = {"77351071", "27326699", "82736918", "61835240", "11808191", "12105460","27651616", "65752500", "74198158", "91741377"};
+  //for getting administrator passcode
+  char admin_input[8];
+  short admin_fixedInput = 0;
+  
+  char contact_input[11]; keeping 
+  int addressOnEEPROM = 0;
+  short setCursor_column = 0;
+  short fixedNumberOfInputs = 0;
+  char codeFromEEPROM[4];
+  String adminpass [] = {"77351071", "27326699", "82736918", "61835240", "11808191", "12105460","27651616", "65752500", "74198158", "91741377"};
 
 /** 
-
+variables used in for the displaying the user 
+input for getting the admin passcode
 */
+short setCursorColumn_adminInput = 0;
+
 
 
 
@@ -140,8 +146,8 @@ void showMessage(String message) {
 }
 
 //method for getting the administrator passcode
-
 void getAdmin_passcode(){
+  //loop for getting input from keypad
   while (true){
       char keyValue = customKeypad.getKey();
       if (keyValue) {
@@ -153,10 +159,18 @@ void getAdmin_passcode(){
           case 'B':
 
           break;
-          
+
           case 'C':
           
-          break;   
+          break;
+          default:
+            if (fixedNumberOfInputs < 11) {
+              user_input[fixedNumberOfInputs] = keyValue;
+              showsUser_input(keyValue);
+              keyValue = 0x00;
+              fixedNumberOfInputs++;
+            }
+            break; 
 
         }
       }
@@ -183,106 +197,138 @@ int contactNumber [];
 int fixedContactNumber = 0;
 
 void loop() {
-  //goto point
-  clearScreen:
+ start_Point:
 
-  showInputPasscode();
-  char keyValue = customKeypad.getKey();
-  if (keyValue) {
-    switch (keyValue) {
-      case 'A':
-          display.setTextColor(WHITE);
-          display.setTextSize(2);
-          display.setCursor(4, 10);
-          display.print("Enter Contact Number: ");
-          display.setCursor(50, 10)
-          display.print("A. Enter     B. Clear")
-          display.setCursor(15, 10)
-          display.display();
-          delay(4000);
-          display.clearDisplay();
-          display.display();
-          keyValue = 0x00;
+ char keyValue = customKeypad.getKey();
+ if (keyValue){
+   switch (keyValue){
+     case 'A':
+     //loop to look and compare values obtained from user to the predefined admin passcodes
+     for(int x = 0; x < 10; x++){
+       //determine if the user input stored in array is equal to one to the contents in the adminpass array
+        if(contact_input.compareTo(adminpass[x]) == 1){
 
-              char keyValue = customKeypad.getKey();
-                if (keyValue) {
-                  switch (keyValue) {
-                    case 'A': 
-                      display.setTextColor(WHITE);
-                      display.setTextSize(2);
-                      display.setCursor(4, 10);
-                      display.print("Proceed to generate code");
-                      display.display();
-                      delay(2000);
-                      display.clearDisplay();
-                      display.display();
-                      keyValue = 0x00;
-                    case 'B': 
-                      display.clearDisplay();
-                      setCursor_column = 0;
-                      keyValue = 0x00;
-                      memset(contact_input, 0, sizeof(contact_input));
-                      fixedContactNumber = 0;
-                      goto clearScreen;
-                    break;
-
-                  default:
-                    if (fixedContactNumber < 11) {
-                    contact_input[fixedContactNumber] = keyValue;
-                    showsUser_input(keyValue);
-                    keyValue = 0x00;
-                    fixedContactNumber++;
-                  }
-                  break;
-        break;
-
-      case 'B':
-          if (fixedNumberOfInputs < 10) {
-          display.setTextColor(WHITE);
-          display.setTextSize(2);
-          display.setCursor(4, 10);
-          display.print("Error");
-          display.display();
-          delay(4000);
-          display.clearDisplay();
-          display.display();
-          keyValue = 0x00;
         }
-        else {
-          
-          
-          goto clearScreen;
-          break;
-        default:
-          if (fixedNumberOfInputs < 11) {
-            user_input[fixedNumberOfInputs] = keyValue;
-            showsUser_input(keyValue);
-            keyValue = 0x00;
-            fixedNumberOfInputs++;
-          }
-          break;
-        
-      case 'C':
-            display.setTextColor(WHITE);
-            display.setTextSize(2);
-            display.setCursor(4, 10);
-            display.display();
-            
-            for(int x = 0; x <(EEPROM.read(0)); x++){
-            String retrievedString = readStringFromEEPROM(eepromAddress);
-            if retrievedString.length() == 11{
-                display.print(retrievedString)
-            }
-            
-            delay(4000);
-            display.clearDisplay();
-            display.display();
-            keyValue = 0x00;
+     }
+      
+     break;
 
----------------------------------------------E-N-D--------------------------------------
-  display.clearDisplay();
-        setCursor_column = 0;
-        keyValue = 0x00;
-        memset(user_input, 0, sizeof(user_input));
-        fixedNumberOfInputs = 0;
-        goto clearScreen;
+     case 'B':
+     break;
+
+     default:
+     //first method for user input entry, number input from user for administrator authentication
+      if (fixedNumberOfInputs < sizeof(contact_input)){
+        contact_input[fixedNumberOfInputs] = keyValue;
+        fixedNumberOfInputs++;
+      }
+     break;
+   }
+ }
+
+
+
+}
+  // //goto point
+  // clearScreen:
+
+  // showInputPasscode();
+  // char keyValue = customKeypad.getKey();
+  // if (keyValue) {
+  //   switch (keyValue) {
+  //     case 'A':
+  //         display.setTextColor(WHITE);
+  //         display.setTextSize(2);
+  //         display.setCursor(4, 10);
+  //         display.print("Enter Contact Number: ");
+  //         display.setCursor(50, 10)
+  //         display.print("A. Enter     B. Clear")
+  //         display.setCursor(15, 10)
+  //         display.display();
+  //         delay(4000);
+  //         display.clearDisplay();
+  //         display.display();
+  //         keyValue = 0x00;
+
+  //             char keyValue = customKeypad.getKey();
+  //               if (keyValue) {
+  //                 switch (keyValue) {
+  //                   case 'A': 
+  //                     display.setTextColor(WHITE);
+  //                     display.setTextSize(2);
+  //                     display.setCursor(4, 10);
+  //                     display.print("Proceed to generate code");
+  //                     display.display();
+  //                     delay(2000);
+  //                     display.clearDisplay();
+  //                     display.display();
+  //                     keyValue = 0x00;
+  //                   case 'B': 
+  //                     display.clearDisplay();
+  //                     setCursor_column = 0;
+  //                     keyValue = 0x00;
+  //                     memset(contact_input, 0, sizeof(contact_input));
+  //                     fixedContactNumber = 0;
+  //                     goto clearScreen;
+  //                   break;
+
+  //                 default:
+  //                   if (fixedContactNumber < 11) {
+  //                   contact_input[fixedContactNumber] = keyValue;
+  //                   showsUser_input(keyValue);
+  //                   keyValue = 0x00;
+  //                   fixedContactNumber++;
+  //                 }
+  //                 break;
+  //       break;
+
+  //     case 'B':
+  //         if (fixedNumberOfInputs < 10) {
+  //         display.setTextColor(WHITE);
+  //         display.setTextSize(2);
+  //         display.setCursor(4, 10);
+  //         display.print("Error");
+  //         display.display();
+  //         delay(4000);
+  //         display.clearDisplay();
+  //         display.display();
+  //         keyValue = 0x00;
+  //       }
+  //       else {
+          
+          
+  //         goto clearScreen;
+  //         break;
+  //       default:
+  //         if (fixedNumberOfInputs < 11) {
+  //           user_input[fixedNumberOfInputs] = keyValue;
+  //           showsUser_input(keyValue);
+  //           keyValue = 0x00;
+  //           fixedNumberOfInputs++;
+  //         }
+  //         break;
+        
+  //     case 'C':
+  //           display.setTextColor(WHITE);
+  //           display.setTextSize(2);
+  //           display.setCursor(4, 10);
+  //           display.display();
+            
+  //           for(int x = 0; x <(EEPROM.read(0)); x++){
+  //           String retrievedString = readStringFromEEPROM(eepromAddress);
+  //           if retrievedString.length() == 11{
+  //               display.print(retrievedString)
+  //           }
+            
+  //           delay(4000);
+  //           display.clearDisplay();
+  //           display.display();
+  //           keyValue = 0x00;
+
+// ---------------------------------------------E-N-D--------------------------------------
+  // display.clearDisplay();
+  //       setCursor_column = 0;
+  //       keyValue = 0x00;
+  //       memset(user_input, 0, sizeof(user_input));
+  //       fixedNumberOfInputs = 0;
+  //       goto clearScreen;
