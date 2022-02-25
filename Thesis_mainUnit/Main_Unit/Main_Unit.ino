@@ -41,15 +41,58 @@ Adafruit_SH1106 display(OLED_RESET);
 #error("Height incorrect, please fix Adafruit_SH1106.h!");
 #endif
 
-
-Keypad customKeypad = Keypad(makeKeymap (hexaKeys), rowPins, colPins, ROWS, COLS);
-
-
+Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS);
 
 void setup()
 {
+    Wire.begin();
+    Serial.begin(9600);
+    display.begin(SH1106_SWITCHCAPVCC, 0x3C);
+    showMainUnit();
 }
 
 void loop()
 {
+start_point:
+    char keyValue = customKeypad.getKey();
+
+    if (keyValue)
+    {
+        switch (keyValue)
+        {
+        case 'A':
+            requestAccess_mode = true;
+            idle_mode = false;
+            showInputPasscodeMessage();
+            while (true)
+            {
+                if (keyValue)
+                {
+                    switch (keyValue)
+                    {
+                        if (fixed_numberOfInputs < 8)
+                        {
+                            displayChar_input(keyValue, set_CursorCollumn);
+                            admin_input[fixed_numberOfInputs] = keyValue;
+                            fixed_numberOfInputs++;
+                        }
+                    }
+                }
+            }
+
+            break;
+        default:
+            break;
+        }
+    }
+    else
+    {
+    }
+
+    /**part of code where the main unit is receiving data from the
+     * meter unit
+     */
+    if (idle_mode == true)
+    {
+    }
 }

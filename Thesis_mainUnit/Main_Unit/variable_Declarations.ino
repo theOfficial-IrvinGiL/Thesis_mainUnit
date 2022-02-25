@@ -15,3 +15,7 @@ char code_fromEEPROM[4];
 String predefined_adminPasscode[] = {
     "77351071", "27326699", "82736918", "61835240"
 };
+
+//declaration for modes
+boolean idle_mode = true;
+boolean requestAccess_mode = false;
