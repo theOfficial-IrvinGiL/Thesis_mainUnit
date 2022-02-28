@@ -43,56 +43,37 @@ Adafruit_SH1106 display(OLED_RESET);
 
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS);
 
+// variable declarations are here: ⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙
+
+char admin_input[8];
+
+unsigned short set_CursorCollumn = 0;
+
+char contact_input[11];
+char generated_passcode[4];
+
+unsigned int address_OnEEPROM = 0;
+unsigned short fixed_numberOfInputs = 0;
+char code_fromEEPROM[4];
+
+String predefined_adminPasscode[] = {
+    "77351071", "27326699", "82736918", "61835240"};
+
+// declaration for modes
+bool idle_mode = true;
+bool requestAccess_mode = false;
+bool showAdmin_menu = false;
+//----
+bool registerUser_mode = false;
+bool delistUser_mode = false;
+bool viewUser_mode = false;
+
+//⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙
+
 void setup()
 {
     Wire.begin();
     Serial.begin(9600);
     display.begin(SH1106_SWITCHCAPVCC, 0x3C);
     showMainUnit();
-}
-
-void loop()
-{
-start_point:
-    char keyValue = customKeypad.getKey();
-
-    if (keyValue)
-    {
-        switch (keyValue)
-        {
-        case 'A':
-            requestAccess_mode = true;
-            idle_mode = false;
-            showInputPasscodeMessage();
-            while (true)
-            {
-                if (keyValue)
-                {
-                    switch (keyValue)
-                    {
-                        if (fixed_numberOfInputs < 8)
-                        {
-                            displayChar_input(keyValue, set_CursorCollumn);
-                            admin_input[fixed_numberOfInputs] = keyValue;
-                            fixed_numberOfInputs++;
-                        }
-                    }
-                }
-            }
-
-            break;
-        default:
-            break;
-        }
-    }
-    else
-    {
-    }
-
-    /**part of code where the main unit is receiving data from the
-     * meter unit
-     */
-    if (idle_mode == true)
-    {
-    }
 }

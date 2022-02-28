@@ -9,4 +9,5 @@ void displayChar_input(char input, short setcursor_Collumn)
     display.setCursor(setcursor_Collumn, 30);
     display.println(input);
     display.display();
+    set_CursorCollumn += 12;
 }
