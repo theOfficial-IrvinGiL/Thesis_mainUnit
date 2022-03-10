@@ -1,79 +1,56 @@
-/**Notes and description
- * Predefined administrator passcodes:
- *  77351071
-    27326699
-    82736918
-    61835240
-    11808191
-    12105460
-    27651616
-    65752500
-    74198158
- *
- *
-*/
-
-// libraries
-#include <Keypad.h>
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SH1106.h>
-#include <SPI.h>
+#include <EEPROM.h>
 
-#define ARRAY_SIZE(x) sizeof(x) / sizeof(x[0])
+#include <nRF24L01.h>
+#include <RF24.h>
+
+
+
+#define ARRAY_SIZE(x) sizeof(x)/sizeof(x[0])
+
 #define OLED_RESET 4
 #define SCREEN_ADDRESS 0x3C
-const byte ROWS = 4;
-const byte COLS = 4;
 
-char hexaKeys[ROWS][COLS] = {
-    {'1', '2', '3', 'A'},
-    {'4', '5', '6', 'B'},
-    {'7', '8', '9', 'C'},
-    {'*', '0', '#', 'D'}};
-byte rowPins[ROWS] = {2, 3, 4, 5};
-byte colPins[COLS] = {A0, A1, A2, A3};
 
 Adafruit_SH1106 display(OLED_RESET);
+RF24 radio(9, 10); // CE, CSM
+const byte RF_addresses [][6] = {"00001", "00002"}; //Setting the two addresses. One for transmitting and one for receiving
+
 
 #if (SH1106_LCDHEIGHT != 64)
 #error("Height incorrect, please fix Adafruit_SH1106.h!");
 #endif
 
-Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS);
+#define registerButton 35
+#define delistButton 33
+#define listenButton 31
 
-// variable declarations are here: ⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙
+//variable declarations
 
-char admin_input[8];
+String processed_message[] = {"", ""};
+boolean register_mode = false;
+boolean delist_mode = false;
+boolean broadcast_mode = false;
+boolean listen_mode = false;
 
-unsigned short set_CursorCollumn = 0;
+void setup() {
+  Wire.begin();
+  Serial.begin(9600);
+  display.begin(SH1106_SWITCHCAPVCC, 0x3C);
 
-char contact_input[11];
-char generated_passcode[4];
+  radio.begin();
+  radio.openWritingPipe(RF_addresses[1]);  //Setting the address at which we will send the data
+  radio.openReadingPipe(1, RF_addresses[0]);  //Setting the address at which we will receive the data
+  radio.setPALevel(RF24_PA_MAX);  //You can set it as minimum or maximum depending on the distance between the transmitter and receiver.
 
-unsigned int address_OnEEPROM = 0;
-unsigned short fixed_numberOfInputs = 0;
-char code_fromEEPROM[4];
+  radio.setAutoAck(false);
+  SPI.setClockDivider(SPI_CLOCK_DIV4);
+  radio.setRetries(15, 15);
 
-String predefined_adminPasscode[] = {
-    "77351071", "27326699", "82736918", "61835240"};
+  pinMode(registerButton, INPUT);
+  pinMode(delistButton, INPUT);
 
-// declaration for modes
-bool idle_mode = true;
-bool requestAccess_mode = false;
-bool showAdmin_menu = false;
-//----
-bool registerUser_mode = false;
-bool delistUser_mode = false;
-bool viewUser_mode = false;
-
-//⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙⋙
-
-void setup()
-{
-    Wire.begin();
-    Serial.begin(9600);
-    display.begin(SH1106_SWITCHCAPVCC, 0x3C);
-    showMainUnit();
 }
