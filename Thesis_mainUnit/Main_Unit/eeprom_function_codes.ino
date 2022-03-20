@@ -1,8 +1,8 @@
 //  codes that has eemprom related functions are written here: ⋙⋙⋙⋙
 
 /**
- * finds the eeprom address with empty values
- */
+   finds the eeprom address with empty values
+*/
 void clearMemory_portion(int target) {
   for (int i = 0 ; i < 15 ; i++) {
     EEPROM.write(i + target, 0);
@@ -55,4 +55,31 @@ String readStringFromEEPROM(int address)
   }
   data[len] = '\0';
   return String(data);
+}
+
+void readAll_eeprom() {
+  //identify size of array
+  unsigned short countThis = 0;
+  unsigned int array_size = 0;
+  while (countThis <= 500) {
+    if (EEPROM.read(countThis) != 0 ) {
+      array_size++;
+    }
+    countThis++;
+  }
+  //read values from eeprom
+  //  char data[array_size + 1];
+  String data = "";
+  for (int i = 0; i < 500; i++) {
+    if (EEPROM.read(i) != 0 ) {
+      data += EEPROM.read(i);
+    }
+  }
+  unsigned int dataLength = data.length();
+  for (int z = 0; z < datalength; z++) {
+    userdata_eeprom [z] = data[z];
+  }
+
+
+
 }

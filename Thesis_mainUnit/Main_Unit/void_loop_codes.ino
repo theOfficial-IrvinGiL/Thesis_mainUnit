@@ -10,11 +10,11 @@ void loop() {
     register_mode = LOW;
     listen_mode = LOW;
   }
-  else if (digitalRead(listenButton) == HIGH){
+  else if (digitalRead(listenButton) == HIGH) {
     delist_mode = LOW;
     register_mode = LOW;
     listen_mode = HIGH;
-    }
+  }
 
 
 
@@ -28,6 +28,7 @@ void loop() {
     function_register();
     empty_serialMessages();
     register_mode = LOW;
+    broadcast_mode = HIGH;
   }
 
 
@@ -42,6 +43,15 @@ void loop() {
     empty_serialMessages();
     delist_mode = LOW;
   }
+
+  /**
+  * skip muna for now
+  */
+  // else if (broadcast_mode == HIGH) {
+  // //put broadcast message here
+  
+
+  // }
 
   else {
     showNoMessage();
