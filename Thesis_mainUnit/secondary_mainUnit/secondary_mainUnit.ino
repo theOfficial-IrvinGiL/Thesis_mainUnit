@@ -3,7 +3,7 @@
 char text[32];
 File myFile;
 
-
+//sample
 
 void store_toSD() {
   // put your main code here, to run repeatedly:
