@@ -1,4 +1,4 @@
-//Mark Neil Crisostomo
+
 #include <SD.h>
 char text[32];
 File myFile;
