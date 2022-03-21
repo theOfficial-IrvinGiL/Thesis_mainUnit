@@ -60,7 +60,7 @@ void setup()
   radio.setRetries(15, 15);
 
   // radio.openWritingPipe(RF_addresses[1]);  //Setting the address at which we will send the data
-  radio.openReadingPipe(1, RF_addresses[0]); // Setting the address at which we will receive the data
+  radio.openReadingPipe(0, RF_addresses[0]); // Setting the address at which we will receive the data
   radio.setPALevel(RF24_PA_MAX);             // You can set it as minimum or maximum depending on the distance between the transmitter and receiver.
 
   // set up defined button values as input

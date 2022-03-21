@@ -117,6 +117,7 @@ void extract_delist()
 // code for dealing with listening and data from the meter unit
 void RF_listenFunction()
 {
+  radio.startListening(); // initialize radio start listening
   if (radio.available())
   {
     digitalWrite(relay_pin, HIGH); // turn relay HIGH
@@ -138,6 +139,8 @@ void RF_listenFunction()
     digitalWrite(indicator_led, HIGH);
     delay(500);
     digitalWrite(indicator_led, LOW);
+    
+    radio.stopListening();
   }
   else // if there is no message picked on radio buffer, then turn indicator_led off
   {
