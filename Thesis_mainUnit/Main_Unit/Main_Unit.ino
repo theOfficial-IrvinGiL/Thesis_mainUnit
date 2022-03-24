@@ -24,8 +24,8 @@ const byte RF_addresses[][6] = {"00001", "00002"}; // Setting the two addresses.
 #endif
 
 // definition of pushbuttons
-#define registerButton 35
-#define delistButton 33
+#define registerButton A0
+#define delistButton A1
 // #define listenButton 31
 #define relay_pin 4     // note include relay for cutting off the power to the arduino nano when not in use
 #define indicator_led 3 // note: add indicator led for the main unit schematic design
@@ -37,10 +37,10 @@ String processed_message[] = {"", ""};
 /**
  *these modes are used in conjuction to the options choosen by the user by pressing the buttons
  */
-boolean register_mode = false;
-boolean delist_mode = false;
-boolean broadcast_mode = false;
-boolean listen_mode = true; // listen_mode is set to high by default at end of each reboot
+boolean register_mode = LOW;
+boolean delist_mode = LOW;
+boolean broadcast_mode = LOW;
+boolean listen_mode = HIGH; // listen_mode is set to high by default at end of each reboot
 
 char userdata_eeprom[500];
 
@@ -64,9 +64,13 @@ void setup()
   radio.setPALevel(RF24_PA_MAX);             // You can set it as minimum or maximum depending on the distance between the transmitter and receiver.
 
   // set up defined button values as input
-  pinMode(registerButton, INPUT);
-  pinMode(delistButton, INPUT);
+  pinMode(registerButton, INPUT_PULLUP);
+  pinMode(delistButton, INPUT_PULLUP);
   // pinMode(listenButton, INPUT);
   pinMode(relay_pin, OUTPUT);
   pinMode(indicator_led, OUTPUT);
+
+  display.display();
+  display.clearDisplay();
+  intro_message();//show intro message
 }
