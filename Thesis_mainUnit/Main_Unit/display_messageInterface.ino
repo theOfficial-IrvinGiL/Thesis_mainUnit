@@ -17,7 +17,10 @@ void showMainUnit()
     display.clearDisplay();
 }
 
-
+/**
+* generic function for displaying messages on 
+the oled module
+*/
 void showOLED(String message) {
   display.clearDisplay();
   display.setTextColor(WHITE);
@@ -28,6 +31,11 @@ void showOLED(String message) {
   delay(2000);
 
 }
+
+/**
+* function to show message
+on listening mode
+*/
 void showListeningMessage() {
   display.clearDisplay();
   display.setTextColor(WHITE);
@@ -37,12 +45,3 @@ void showListeningMessage() {
   display.display();
 
 }
-// void showWrongPass() {
-//   display.clearDisplay();
-//   display.setTextColor(WHITE);
-//   display.setTextSize(1);
-//   display.setCursor(2, 2);
-//   display.print("Wrong Password!!");
-//   display.display();
-
-// }

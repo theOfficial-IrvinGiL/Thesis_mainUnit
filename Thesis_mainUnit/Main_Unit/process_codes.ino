@@ -51,12 +51,15 @@ void function_register()
   if (processed_message[0] == "")
   {
     Serial.println("The Serial message that you sent is unreadable by the system.");
-    showOLED("The Serial message that you sent is unreadable by the system.");
+    showOLED("The Serial message unreadable.");
+    empty_serialMessages();
   }
   else
   {
     update_eeprom(concat_message);
+    empty_serialMessages();
     showOLED("Data Registered Successfully!");
+
   }
 }
 
@@ -65,8 +68,8 @@ void function_register()
  */
 void function_delist()
 {
-  process_message();
-  Serial.flush();
+  process_message();  // process the serial data from the serial monitor
+  Serial.flush(); //clears the serial buffer
   if (processed_message[0] == "")
   {
     Serial.println("The Serial message that you sent is unreadable by the system.");
@@ -83,12 +86,12 @@ void function_delist()
  */
 void extract_delist()
 {
-  process_message();
+  process_message();  // process the serial data from the serial monitor
 
   String concat_message = processed_message[0];
   concat_message += processed_message[1];
   String eeprom_value;
-  Serial.println(eeprom_value);
+  // Serial.println(eeprom_value);
   unsigned int target_address = 0;
 
   unsigned int counter = 0;
@@ -110,22 +113,27 @@ void extract_delist()
     }
     counter += 15;
   }
+  /**
+  * if data from serial is not on the system
+  * then counter will reach 300
+  */
   if (counter >= 300)
   {
     showOLED("The Data you want to delist is not on the system!");
+    empty_serialMessages();
   }
   else
   {
     Serial.println(target_address);
     clearMemory_portion(target_address);
+    empty_serialMessages();
   }
 // 1120,23568965233,
-  // else
-  // {
-  //   Serial.println("else");
-  // }
+  
 }
 
+
+//under development
 // code for dealing with listening and data from the meter unit
 void RF_listenFunction()
 {

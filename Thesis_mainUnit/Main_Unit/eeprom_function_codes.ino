@@ -52,7 +52,6 @@ int findEmpty_address()
     unsigned short readVar = var + var1 + var2 + var3;
     if (readVar <= 0)
     {
-      Serial.println("Empty EEPROM Address: " + counter);
       return counter;
       break;
     }
@@ -80,35 +79,3 @@ String readStringFromEEPROM(int address)
 }
 
 
-/**
-* attempt to flash all registered user data on eeprom
-*/
-// void readAll_eeprom()
-// {
-//   // identify size of array
-//   unsigned short countThis = 0;
-//   unsigned int array_size = 0;
-//   while (countThis <= 500)
-//   {
-//     if (EEPROM.read(countThis) != 0)
-//     {
-//       array_size++;
-//     }
-//     countThis++;
-//   }
-//   // read values from eeprom
-//   //   char data[array_size + 1];
-//   String data = "";
-//   for (int i = 0; i < 500; i++)
-//   {
-//     if (EEPROM.read(i) != 0)
-//     {
-//       data += EEPROM.read(i);
-//     }
-//   }
-//   unsigned int dataLength = data.length();
-//   for (int z = 0; z < datalength; z++)
-//   {
-//     userdata_eeprom[z] = data[z];
-//   }
-// }

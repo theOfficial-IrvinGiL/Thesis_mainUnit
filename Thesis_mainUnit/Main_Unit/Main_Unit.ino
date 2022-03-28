@@ -66,9 +66,9 @@ void setup()
   // set up defined button values as input
   pinMode(registerButton, INPUT);
   pinMode(delistButton, INPUT);
-  
+
   // pinMode(listenButton, INPUT);
   pinMode(relay_pin, OUTPUT);
   pinMode(indicator_led, OUTPUT);
-  showMainUnit();
+  showMainUnit(); // display *Main unit message at the first boot up
 }
