@@ -98,41 +98,32 @@ void extract_delist()
     Serial.println(eeprom_value);
     if (eeprom_value == concat_message)
     {
-      target_address = x;
+      target_address = counter;
       showOLED("Data Delisted Successfully!");
       break;
     }
-    else if (x >= 300)
+    else if (counter >= 300)
     {
-      showOLED("The Data you want to delist is not on the system!");
-      target_address = x;
-      break;
-    }
-  }
 
-  for (unsigned int x = 0; x <= 300; x + 15)
-  {
-    eeprom_value = String(readStringFromEEPROM(x));
-    Serial.println(eeprom_value);
-    if (eeprom_value == concat_message)
-    {
-      target_address = x;
-      showOLED("Data Delisted Successfully!");
+      target_address = counter;
       break;
     }
-    else if (x >= 300)
-    {
-      showOLED("The Data you want to delist is not on the system!");
-      target_address = x;
-      break;
-    }
-    // else
-    // {
-    //   Serial.println("else");
-    // }
+    counter += 15;
   }
-  Serial.println(target_address);
-  clearMemory_portion(target_address);
+  if (counter >= 300)
+  {
+    showOLED("The Data you want to delist is not on the system!");
+  }
+  else
+  {
+    Serial.println(target_address);
+    clearMemory_portion(target_address);
+  }
+// 1120,23568965233,
+  // else
+  // {
+  //   Serial.println("else");
+  // }
 }
 
 // code for dealing with listening and data from the meter unit
