@@ -37,12 +37,12 @@ void showListeningMessage() {
   display.display();
 
 }
-void showWrongPass() {
-  display.clearDisplay();
-  display.setTextColor(WHITE);
-  display.setTextSize(1);
-  display.setCursor(2, 2);
-  display.print("Wrong Password!!");
-  display.display();
+// void showWrongPass() {
+//   display.clearDisplay();
+//   display.setTextColor(WHITE);
+//   display.setTextSize(1);
+//   display.setCursor(2, 2);
+//   display.print("Wrong Password!!");
+//   display.display();
 
-}
+// }

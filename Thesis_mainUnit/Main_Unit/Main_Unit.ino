@@ -8,7 +8,7 @@
 #include <RF24.h>
 
 // keep in case of *determining_size_of_array problem
-#define ARRAY_SIZE(x) sizeof(x) / sizeof(x[0])
+// #define ARRAY_SIZE(x) sizeof(x) / sizeof(x[0])
 
 #define OLED_RESET 4
 #define SCREEN_ADDRESS 0x3C
@@ -66,7 +66,9 @@ void setup()
   // set up defined button values as input
   pinMode(registerButton, INPUT);
   pinMode(delistButton, INPUT);
+  
   // pinMode(listenButton, INPUT);
   pinMode(relay_pin, OUTPUT);
   pinMode(indicator_led, OUTPUT);
+  showMainUnit();
 }

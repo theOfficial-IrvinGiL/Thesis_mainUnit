@@ -1,8 +1,8 @@
 // codes for the computation and calculation processs are written here: ⋙⋙
 
 /**
-* void function to clear the array contents of #processed_message
-*/
+ * void function to clear the array contents of #processed_message
+ */
 void empty_serialMessages()
 {
   for (int x = 0; x < sizeof(processed_message); x++)
@@ -12,8 +12,8 @@ void empty_serialMessages()
 }
 
 /**
-* void function to process the serial data message sent from the android through serial
-*/
+ * void function to process the serial data message sent from the android through serial
+ */
 void process_message()
 {
   String message = "";
@@ -37,8 +37,8 @@ void process_message()
 }
 
 /**
-* void function used to register the processed user data from serial
-*/
+ * void function used to register the processed user data from serial
+ */
 void function_register()
 {
   process_message();
@@ -61,8 +61,8 @@ void function_register()
 }
 
 /**
-* void function used to delist the user data processed from serial 
-*/
+ * void function used to delist the user data processed from serial
+ */
 void function_delist()
 {
   process_message();
@@ -75,40 +75,61 @@ void function_delist()
   else
   {
     extract_delist();
-    if (Serial.available() == 0)
-    {
-      showOLED("Data Delisted Successfully!");
-    }
   }
 }
 
 /**
-* the working function of function_delist for deleting the specified user contact
-*/
+ * the working function of function_delist for deleting the specified user contact
+ */
 void extract_delist()
 {
+  process_message();
+
   String concat_message = processed_message[0];
   concat_message += processed_message[1];
   String eeprom_value;
+  Serial.println(eeprom_value);
   unsigned int target_address = 0;
 
-  for (unsigned long x = 0; x < EEPROM.length(); x + 15)
+  unsigned int counter = 0;
+  while (counter <= 300)
   {
-    eeprom_value = String(readStringFromEEPROM(x));
+    eeprom_value = String(readStringFromEEPROM(counter));
+    Serial.println(eeprom_value);
     if (eeprom_value == concat_message)
     {
       target_address = x;
+      showOLED("Data Delisted Successfully!");
       break;
     }
-    else if (x >= 500)
+    else if (x >= 300)
     {
       showOLED("The Data you want to delist is not on the system!");
+      target_address = x;
       break;
     }
-    else
+  }
+
+  for (unsigned int x = 0; x <= 300; x + 15)
+  {
+    eeprom_value = String(readStringFromEEPROM(x));
+    Serial.println(eeprom_value);
+    if (eeprom_value == concat_message)
     {
-      Serial.println("else");
+      target_address = x;
+      showOLED("Data Delisted Successfully!");
+      break;
     }
+    else if (x >= 300)
+    {
+      showOLED("The Data you want to delist is not on the system!");
+      target_address = x;
+      break;
+    }
+    // else
+    // {
+    //   Serial.println("else");
+    // }
   }
   Serial.println(target_address);
   clearMemory_portion(target_address);
@@ -139,7 +160,7 @@ void RF_listenFunction()
     digitalWrite(indicator_led, HIGH);
     delay(500);
     digitalWrite(indicator_led, LOW);
-    
+
     radio.stopListening();
   }
   else // if there is no message picked on radio buffer, then turn indicator_led off

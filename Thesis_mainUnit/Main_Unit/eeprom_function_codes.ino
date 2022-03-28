@@ -7,7 +7,7 @@ void clearMemory_portion(int target)
 {
   for (int i = 0; i < 15; i++)
   {
-    EEPROM.write(i + target, 0);
+    EEPROM.write(target, 0);
   }
 }
 

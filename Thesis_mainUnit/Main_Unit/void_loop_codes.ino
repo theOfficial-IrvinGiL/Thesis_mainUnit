@@ -1,94 +1,79 @@
 // code for the void loop is written here...
+
 void loop()
 {
-  // even-mode trigger statements
+  //    int buttonOne = digitalRead(registerButton);
+  //    int buttonTwo = digitalRead(delistButton);
+
   if (digitalRead(registerButton) == HIGH)
   {
     register_mode = HIGH;
     delist_mode = LOW;
+    broadcast_mode = LOW;
     listen_mode = LOW;
   }
-  else if (digitalRead(delistButton) == HIGH)
-  {
-    delist_mode = HIGH;
+  else if (digitalRead(delistButton) == HIGH) {
     register_mode = LOW;
+    delist_mode = HIGH;
+    broadcast_mode = LOW;
     listen_mode = LOW;
   }
-  // else if (digitalRead(listenButton) == HIGH)
-  // {
-  //   delist_mode = LOW;
-  //   register_mode = LOW;
-  //   listen_mode = HIGH;
-  // }
 
-  // statement for dealing with function when button 1 is pressed
+  
+  // event handling conditional statements
   if (register_mode == HIGH)
   {
-    String msg = "Send Serial data to register contact.";
-    showOLED(msg);
-
-    unsigned long now_millis = millis();
-    while ((millis() - now_millis) < 30000)
+    unsigned long thisMilis = millis();
+    // write functions to deal with registering new data here
+    while ((millis() - thisMilis) <= 20000)
     {
-      showOLED("Waiting for Serial Data!!!");
       if (Serial.available() != 0)
       {
+        /**
+          calls function on process_codes to handle process
+          of registering new user da
+        */
         function_register();
-        empty_serialMessages();
-        register_mode = LOW;
-        broadcast_mode = HIGH;
         break;
+      }
+      else
+      {
+        showOLED("Register: Waiting for data!");
       }
     }
 
-    /**
-     * note: tried to revise the commented code below to function in a different way
-     */
-
-    // while (Serial.available() == 0)
-    // {
-    //   showOLED("Waiting for Serial Data!!!");
-    // }
-    // function_register();
-    // empty_serialMessages();
-    // register_mode = LOW;
-    // broadcast_mode = HIGH;
-  }
-
-  // statement for dealing with function when button 2 is pressed
-  else if (delist_mode == HIGH)
-  {
-    String msg = "Send Serial data to delist a contact.";
-    showOLED(msg);
-    while (Serial.available() == 0)
-    {
-      showOLED("Waiting for Serial Data!!!");
-    }
-    function_delist();
-    empty_serialMessages();
-    delist_mode = LOW;
-  }
-
-  /**
-   * skip muna for now
-   */
-  else if (broadcast_mode == HIGH)
-  {
-    // put broadcast message here
-
-    /**
-     * direct the other boolean event triggers to be false
-     */
-    broadcast_mode == LOW;
-    delist_mode = LOW;
+    // set register mode back into LOW before exiting
     register_mode = LOW;
   }
+  else if (delist_mode == HIGH)
+  {
+    unsigned long thisMilis = millis();
+    // write functions to deal with registering new data here
+    while ((millis() - thisMilis) <= 20000)
+    {
+      if (Serial.available() != 0)
+      {
+        /**
+          calls function on process_codes to handle process
+          of registering new user da
+        */
+        function_delist();
+        break;
+      }
+      else
+      {
+        showOLED("Delist: Waiting for data!");
+      }
+    }
 
-  // default statement for the unit is listening mode
-  // when all other mode is not set to HIGH
+    // set delist mode back into LOW before exiting
+    delist_mode = LOW;
+  }
+  /**
+     default listening mode
+  */
   else
   {
-    showListeningMessage();
-    RF_listenFunction();
+    showOLED("Listening mode...");
   }
 }
