@@ -24,7 +24,7 @@ void process_message()
     if (value == ',')
     {
       processed_message[count] = message;
-      showOLED(processed_message[count]);
+      showOLED(processed_message[count], 2000);
 
       message = "";
       count++;
@@ -51,14 +51,14 @@ void function_register()
   if (processed_message[0] == "")
   {
     Serial.println("The Serial message that you sent is unreadable by the system.");
-    showOLED("The Serial message unreadable.");
+    showOLED("The Serial message unreadable.", 2000);
     empty_serialMessages();
   }
   else
   {
     update_eeprom(concat_message);
     empty_serialMessages();
-    showOLED("Data Registered Successfully!");
+    showOLED("Data Registered Successfully!", 2000);
   }
 }
 
@@ -72,7 +72,7 @@ void function_delist()
   if (processed_message[0] == "")
   {
     Serial.println("The Serial message that you sent is unreadable by the system.");
-    showOLED("The Serial message that you sent is unreadable by the system.");
+    showOLED("The Serial message that you sent is unreadable by the system.", 2000);
   }
   else
   {
@@ -101,7 +101,7 @@ void extract_delist()
     if (eeprom_value == concat_message)
     {
       target_address = counter;
-      showOLED("Data Delisted Successfully!");
+      showOLED("Data Delisted Successfully!", 2000);
       break;
     }
     else if (counter >= 300)
@@ -118,7 +118,7 @@ void extract_delist()
    */
   if (counter >= 300)
   {
-    showOLED("The Data you want to delist is not on the system!");
+    showOLED("The Data you want to delist is not on the system!", 2000);
     empty_serialMessages();
   }
   else
