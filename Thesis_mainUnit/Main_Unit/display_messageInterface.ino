@@ -21,14 +21,14 @@ void showMainUnit()
 * generic function for displaying messages on 
 the oled module
 */
-void showOLED(String message) {
+void showOLED(String message, int delayCount) {
   display.clearDisplay();
   display.setTextColor(WHITE);
   display.setTextSize(1);
   display.setCursor(2, 2);
   display.print(message);
   display.display();
-  delay(2000);
+  delay(delayCount);
 
 }
 

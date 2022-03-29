@@ -1,3 +1,8 @@
+/**
+*Note: This tab is where declartion and library instantiations
+are written and also where the void set up is located.
+*/
+
 // librabry declarations
 #include <SPI.h>
 #include <Wire.h>
@@ -27,7 +32,7 @@ const byte RF_addresses[][6] = {"00001", "00002"}; // Setting the two addresses.
 #define registerButton 35
 #define delistButton 33
 // #define listenButton 31
-#define relay_pin 4     // note include relay for cutting off the power to the arduino nano when not in use
+#define nanoSwitch 4     // note include relay for cutting off the power to the arduino nano when not in use
 #define indicator_led 3 // note: add indicator led for the main unit schematic design
 
 // variable declarations
@@ -63,12 +68,12 @@ void setup()
   radio.openReadingPipe(0, RF_addresses[0]); // Setting the address at which we will receive the data
   radio.setPALevel(RF24_PA_MAX);             // You can set it as minimum or maximum depending on the distance between the transmitter and receiver.
 
-  // set up defined button values as input
+  // set unano_switch button values as input
   pinMode(registerButton, INPUT);
   pinMode(delistButton, INPUT);
 
   // pinMode(listenButton, INPUT);
-  pinMode(relay_pin, OUTPUT);
+  pinMode(nanoSwitch, OUTPUT);
   pinMode(indicator_led, OUTPUT);
   showMainUnit(); // display *Main unit message at the first boot up
 }

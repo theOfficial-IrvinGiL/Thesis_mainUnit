@@ -2,9 +2,10 @@
 
 void loop()
 {
-  //    int buttonOne = digitalRead(registerButton);
-  //    int buttonTwo = digitalRead(delistButton);
 
+  /**
+   * conditional statement for handling detection of buttons
+   */
   if (digitalRead(registerButton) == HIGH)
   {
     register_mode = HIGH;
@@ -12,14 +13,14 @@ void loop()
     broadcast_mode = LOW;
     listen_mode = LOW;
   }
-  else if (digitalRead(delistButton) == HIGH) {
+  else if (digitalRead(delistButton) == HIGH)
+  {
     register_mode = LOW;
     delist_mode = HIGH;
     broadcast_mode = LOW;
     listen_mode = LOW;
   }
 
-  
   // event handling conditional statements
   if (register_mode == HIGH)
   {
@@ -30,15 +31,18 @@ void loop()
       if (Serial.available() != 0)
       {
         /**
-          calls function on process_codes to handle process
+          calls function on process_codes
+           to handle process
           of registering new user da
         */
         function_register();
+
+        // write code for broadcast here
         break;
       }
       else
       {
-        showOLED("Register: Waiting for data!");
+        showOLED("Register: Waiting for data!", 2000);
       }
     }
 
@@ -58,11 +62,13 @@ void loop()
           of registering new user da
         */
         function_delist();
+
+        // write code for broadcast here
         break;
       }
       else
       {
-        showOLED("Delist: Waiting for data!");
+        showOLED("Delist: Waiting for data!", 2000);
       }
     }
 
@@ -74,6 +80,9 @@ void loop()
   */
   else
   {
-    showOLED("Listening mode...");
+    //call the radio listening function
+    RF_listenFunction();
+
+   
   }
 }

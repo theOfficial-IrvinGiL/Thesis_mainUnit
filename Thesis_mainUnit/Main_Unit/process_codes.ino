@@ -59,7 +59,6 @@ void function_register()
     update_eeprom(concat_message);
     empty_serialMessages();
     showOLED("Data Registered Successfully!");
-
   }
 }
 
@@ -68,8 +67,8 @@ void function_register()
  */
 void function_delist()
 {
-  process_message();  // process the serial data from the serial monitor
-  Serial.flush(); //clears the serial buffer
+  process_message(); // process the serial data from the serial monitor
+  Serial.flush();    // clears the serial buffer
   if (processed_message[0] == "")
   {
     Serial.println("The Serial message that you sent is unreadable by the system.");
@@ -86,7 +85,7 @@ void function_delist()
  */
 void extract_delist()
 {
-  process_message();  // process the serial data from the serial monitor
+  process_message(); // process the serial data from the serial monitor
 
   String concat_message = processed_message[0];
   concat_message += processed_message[1];
@@ -114,9 +113,9 @@ void extract_delist()
     counter += 15;
   }
   /**
-  * if data from serial is not on the system
-  * then counter will reach 300
-  */
+   * if data from serial is not on the system
+   * then counter will reach 300
+   */
   if (counter >= 300)
   {
     showOLED("The Data you want to delist is not on the system!");
@@ -128,42 +127,39 @@ void extract_delist()
     clearMemory_portion(target_address);
     empty_serialMessages();
   }
-// 1120,23568965233,
-  
+  // 1120,23568965233,
 }
 
-
-//under development
-// code for dealing with listening and data from the meter unit
+// under development
+//  code for dealing with listening and data from the meter unit
 void RF_listenFunction()
 {
   radio.startListening(); // initialize radio start listening
   if (radio.available())
   {
-    digitalWrite(relay_pin, HIGH); // turn relay HIGH
-    delay(1000);                   // delay 1 sec to allow nano to boot up properly
-
+    digitalWrite(indicator_led, HIGH); // turn on indicator led
     /**
      * read data from the rf radio buffer
      */
     char text[32] = "";
-    radio.read(&text, sizeof(text));
+    radio.read(&text, sizeof(text)); // get value from NRF
     radio.stopListening();
+
+    showOLED("Data Received, Saving to SD...", 0);
+
+    digitalWrite(nanoSwitch, HIGH);
     Serial.write(text, sizeof(text)); // write into serial sd card
-
-    // turn indicator led on and off
-    digitalWrite(indicator_led, HIGH);
-    delay(500);
-    digitalWrite(indicator_led, LOW);
-    delay(500);
-    digitalWrite(indicator_led, HIGH);
-    delay(500);
-    digitalWrite(indicator_led, LOW);
-
+    delay(1000);
+    
     radio.stopListening();
+    digitalWrite(nanoSwitch, LOW);
+    digitalWrite(indicator_led, LOW); // turn off indicator led
+
+    Serial.flush(); // to clear the serial buffer
   }
   else // if there is no message picked on radio buffer, then turn indicator_led off
   {
     digitalWrite(indicator_led, LOW);
+    showOLED("Listening mode...", 2000);
   }
 }
