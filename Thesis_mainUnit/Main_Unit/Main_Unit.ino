@@ -22,6 +22,7 @@ are written and also where the void set up is located.
 Adafruit_SH1106 display(OLED_RESET);
 RF24 radio(9, 10);                                 // CE, CSN
 const byte RF_addresses[][6] = {"00001", "00002"}; // Setting the two addresses. One for (receiving , transmitting)
+int indicator_led = 00;
 
 // misc code from oled example
 #if (SH1106_LCDHEIGHT != 64)
@@ -33,7 +34,7 @@ const byte RF_addresses[][6] = {"00001", "00002"}; // Setting the two addresses.
 #define delistButton 33
 // #define listenButton 31
 #define nanoSwitch 4     // note include relay for cutting off the power to the arduino nano when not in use
-#define indicator_led 3 // note: add indicator led for the main unit schematic design
+#define indicator_led A0 // note: add indicator led for the main unit schematic design
 
 // variable declarations
 
@@ -58,15 +59,9 @@ void setup()
   Wire.begin();
   Serial.begin(9600);
   display.begin(SH1106_SWITCHCAPVCC, 0x3C); //  for OLED module component
+  display.clearDisplay();
 
-  radio.begin();
-  radio.setAutoAck(false);
-  SPI.setClockDivider(SPI_CLOCK_DIV4);
-  radio.setRetries(15, 15);
-
-  // radio.openWritingPipe(RF_addresses[1]);  //Setting the address at which we will send the data
-  radio.openReadingPipe(0, RF_addresses[0]); // Setting the address at which we will receive the data
-  radio.setPALevel(RF24_PA_MAX);             // You can set it as minimum or maximum depending on the distance between the transmitter and receiver.
+  RF_setupListen();             // You can set it as minimum or maximum depending on the distance between the transmitter and receiver.
 
   // set unano_switch button values as input
   pinMode(registerButton, INPUT);
@@ -75,5 +70,8 @@ void setup()
   // pinMode(listenButton, INPUT);
   pinMode(nanoSwitch, OUTPUT);
   pinMode(indicator_led, OUTPUT);
+  blink_LED();
   showMainUnit(); // display *Main unit message at the first boot up
+
+ 
 }

@@ -82,6 +82,7 @@ void loop()
   {
     //call the radio listening function
     RF_listenFunction();
+    delay(500);
 
    
   }

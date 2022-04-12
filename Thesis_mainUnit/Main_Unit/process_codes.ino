@@ -1,5 +1,17 @@
 // codes for the computation and calculation processs are written here: ⋙⋙
 
+void RF_setupListen(){
+  //For NRF setup
+  radio.begin();  
+  radio.setAutoAck(false);
+  SPI.setClockDivider(SPI_CLOCK_DIV4);
+  radio.setRetries(15, 15);
+
+  // radio.openWritingPipe(RF_addresses[0]);  //Setting the address at which we will send the data
+  radio.openReadingPipe(0, RF_addresses[1]); // Setting the address at which we will receive the data
+  radio.setPALevel(RF24_PA_MAX);
+  }
+
 /**
  * void function to clear the array contents of #processed_message
  */
@@ -137,10 +149,8 @@ void RF_listenFunction()
   radio.startListening(); // initialize radio start listening
   if (radio.available())
   {
-    digitalWrite(indicator_led, HIGH); // turn on indicator led
-    /**
-     * read data from the rf radio buffer
-     */
+    blink_LED(); // indicator if data recieved 
+
     char text[32] = "";
     radio.read(&text, sizeof(text)); // get value from NRF
     radio.stopListening();
@@ -149,11 +159,11 @@ void RF_listenFunction()
 
     digitalWrite(nanoSwitch, HIGH);
     Serial.write(text, sizeof(text)); // write into serial sd card
-    delay(1000);
+    delay(5000); //delay for 5 seconds to allow nano to read and store data into sd card
     
     radio.stopListening();
     digitalWrite(nanoSwitch, LOW);
-    digitalWrite(indicator_led, LOW); // turn off indicator led
+    delay(3000); //put a delay window for 3 seconds 
 
     Serial.flush(); // to clear the serial buffer
   }
