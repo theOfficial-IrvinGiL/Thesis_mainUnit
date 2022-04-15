@@ -64,6 +64,8 @@ void loop()
         function_delist();
 
         // write code for broadcast here
+        RF_broadcastFunction();
+
         break;
       }
       else
@@ -80,10 +82,8 @@ void loop()
   */
   else
   {
-    //call the radio listening function
+    // call the radio listening function
     RF_listenFunction();
     delay(500);
-
-   
   }
 }
