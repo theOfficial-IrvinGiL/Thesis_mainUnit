@@ -3,7 +3,7 @@
 are written and also where the void set up is located.
 */
 
-// librabry declarations
+// library declarations
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -21,7 +21,11 @@ are written and also where the void set up is located.
 // component object declarations
 Adafruit_SH1106 display(OLED_RESET);
 RF24 radio(9, 10);                                 // CE, CSN
-const byte RF_addresses[][6] = {"00001", "00002"}; // Setting the two addresses. One for (receiving , transmitting)
+const byte RF_addresses[][6] = {"00001", "00002"}; // Setting the two addresses. 
+/**
+* 00001 - main unit >> meter unit
+* 00002 - meter unit >> main unit
+*/
 int indicator_led = 00;
 
 // misc code from oled example
@@ -38,7 +42,7 @@ int indicator_led = 00;
 
 // variable declarations
 
-String processed_message[] = {"", ""};
+String processed_message = ""; //global variable to house the processed serial message
 
 /**
  *these modes are used in conjuction to the options choosen by the user by pressing the buttons
@@ -47,8 +51,8 @@ boolean register_mode = false;
 boolean delist_mode = false;
 boolean broadcast_mode = false;
 boolean listen_mode = true; // listen_mode is set to high by default at end of each reboot
-
-char userdata_eeprom[500];
+//variable declarations for dealing with updating/delisting user data on the main and meter unit
+String eeprom_passcodes[20]; //serve as array storage of passcodes registered on eeprom
 
 // setup code
 /**
@@ -63,11 +67,10 @@ void setup()
 
   RF_setupListen();             // You can set it as minimum or maximum depending on the distance between the transmitter and receiver.
 
-  // set unano_switch button values as input
+  // set the switch button values as input
   pinMode(registerButton, INPUT);
   pinMode(delistButton, INPUT);
 
-  // pinMode(listenButton, INPUT);
   pinMode(nanoSwitch, OUTPUT);
   pinMode(indicator_led, OUTPUT);
   blink_LED();

@@ -1,9 +1,9 @@
 // code for displaying interfaces that only has text/messages is written here: ⋙⋙
 
-//NRF data Recieved Data Indicator
+// Indicator LED
 void blink_LED()
 {
-//  unsigned long timestampLED = millis();
+
   for (int i = 0; i < 10; i++)
   {
     digitalWrite(indicator_led, HIGH);
@@ -11,12 +11,7 @@ void blink_LED()
     digitalWrite(indicator_led, LOW);
     delay(50);
   }
-//  while (millis() - timestampLED <= 1500) {
-//    digitalWrite(indicator_led, HIGH);
-//    delay(80);
-//    digitalWrite(indicator_led, LOW);
-//    
-//  }
+
 }
 
 /**
@@ -51,16 +46,16 @@ void showOLED(String message, int delayCount) {
 
 }
 
-/**
-  function to show message
-  on listening mode
-*/
-void showListeningMessage() {
-  display.clearDisplay();
-  display.setTextColor(WHITE);
-  display.setTextSize(1);
-  display.setCursor(2, 2);
-  display.print("Listening Mode . . . . .");
-  display.display();
+// /**
+//   function to show message
+//   on listening mode
+// */
+// void showListeningMessage() {
+//   display.clearDisplay();
+//   display.setTextColor(WHITE);
+//   display.setTextSize(1);
+//   display.setCursor(2, 2);
+//   display.print("Listening Mode . . . . .");
+//   display.display();
 
-}
+// }

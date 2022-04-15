@@ -15,10 +15,10 @@ void store_toSD() {
     ; // wait for serial port to connect. Needed for native USB port only
   }
   if (!SD.begin(10)) {
-    Serial.println("initialization failed!");
+    // Serial.println("initialization failed!");
     while (1);
   }
-  Serial.println("initialization done.");
+  // Serial.println("initialization done.");
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
   myFile = SD.open("bayotka.txt", FILE_WRITE);
@@ -28,8 +28,8 @@ void store_toSD() {
 
     // close the file:
     myFile.close();
-    Serial.println("done.");
- //readingSD();
+    // Serial.println("done.");
+ 
   } else {
     // if the file didn't open, print an error:
     Serial.println("error opening test.txt");
@@ -48,5 +48,6 @@ void loop() {
   if (Serial.available())
   {
     store_toSD();
+    Serial.flush(); // flushes/empty the contents of the serial buffer 
   }
 }

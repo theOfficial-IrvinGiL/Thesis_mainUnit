@@ -1,26 +1,27 @@
 // codes for the computation and calculation processs are written here: ⋙⋙
 
-void RF_setupListen(){
-  //For NRF setup
-  radio.begin();  
+void RF_setupListen()
+{
+  // For NRF setup for listening
+  radio.begin();
   radio.setAutoAck(false);
   SPI.setClockDivider(SPI_CLOCK_DIV4);
   radio.setRetries(15, 15);
 
-  // radio.openWritingPipe(RF_addresses[0]);  //Setting the address at which we will send the data
   radio.openReadingPipe(0, RF_addresses[1]); // Setting the address at which we will receive the data
   radio.setPALevel(RF24_PA_MAX);
-  }
+}
 
-/**
- * void function to clear the array contents of #processed_message
- */
-void empty_serialMessages()
+// function for setting up broadcast function
+void RF_setupBroadcast()
 {
-  for (int x = 0; x < sizeof(processed_message); x++)
-  {
-    processed_message[x] = "";
-  }
+
+  radio.setAutoAck(false);
+  SPI.setClockDivider(SPI_CLOCK_DIV4);
+  radio.setRetries(15, 15);
+  radio.openWritingPipe(address[0]);
+  radio.setPALevel(RF24_PA_MAX);
+  radio.stopListening();
 }
 
 /**
@@ -35,11 +36,15 @@ void process_message()
     char value = Serial.read();
     if (value == ',')
     {
-      processed_message[count] = message;
-      showOLED(processed_message[count], 2000);
+      processed_message = message;
+      showOLED(processed_message, 1000);
 
       message = "";
       count++;
+    }
+    else if (value == "") // break the loop if there is space on the serial data
+    {
+      break;
     }
     else
     {
@@ -56,22 +61,21 @@ void function_register()
   process_message();
 
   int empty_address = findEmpty_address();
-  String concat_message = processed_message[0];
-  concat_message += processed_message[1];
 
   Serial.flush();
-  if (processed_message[0] == "")
+  if (processed_message == "")
   {
     Serial.println("The Serial message that you sent is unreadable by the system.");
     showOLED("The Serial message unreadable.", 2000);
-    empty_serialMessages();
+    processed_message = "";
   }
   else
   {
-    update_eeprom(concat_message);
-    empty_serialMessages();
+    update_eeprom(processed_message);
+    processed_message = "";
     showOLED("Data Registered Successfully!", 2000);
   }
+  processed_message = "";
 }
 
 /**
@@ -81,7 +85,7 @@ void function_delist()
 {
   process_message(); // process the serial data from the serial monitor
   Serial.flush();    // clears the serial buffer
-  if (processed_message[0] == "")
+  if (processed_message == "")
   {
     Serial.println("The Serial message that you sent is unreadable by the system.");
     showOLED("The Serial message that you sent is unreadable by the system.", 2000);
@@ -90,6 +94,7 @@ void function_delist()
   {
     extract_delist();
   }
+  processed_message = "";
 }
 
 /**
@@ -99,45 +104,43 @@ void extract_delist()
 {
   process_message(); // process the serial data from the serial monitor
 
-  String concat_message = processed_message[0];
-  concat_message += processed_message[1];
   String eeprom_value;
   // Serial.println(eeprom_value);
   unsigned int target_address = 0;
 
   unsigned int counter = 0;
-  while (counter <= 300)
+  while (counter <= 100)
   {
     eeprom_value = String(readStringFromEEPROM(counter));
-    Serial.println(eeprom_value);
-    if (eeprom_value == concat_message)
+    // Serial.println(eeprom_value);
+    if (eeprom_value == processed_message)
     {
       target_address = counter;
       showOLED("Data Delisted Successfully!", 2000);
       break;
     }
-    else if (counter >= 300)
+    else if (counter >= 100)
     {
 
       target_address = counter;
       break;
     }
-    counter += 15;
+    counter += 4;
   }
   /**
    * if data from serial is not on the system
    * then counter will reach 300
    */
-  if (counter >= 300)
+  if (counter >= 100)
   {
     showOLED("The Data you want to delist is not on the system!", 2000);
-    empty_serialMessages();
+    processed_message = "";
   }
   else
   {
     Serial.println(target_address);
     clearMemory_portion(target_address);
-    empty_serialMessages();
+    processed_message = "";
   }
   // 1120,23568965233,
 }
@@ -149,7 +152,7 @@ void RF_listenFunction()
   radio.startListening(); // initialize radio start listening
   if (radio.available())
   {
-    blink_LED(); // indicator if data recieved 
+    blink_LED(); // indicator if data recieved
 
     char text[32] = "";
     radio.read(&text, sizeof(text)); // get value from NRF
@@ -159,11 +162,11 @@ void RF_listenFunction()
 
     digitalWrite(nanoSwitch, HIGH);
     Serial.write(text, sizeof(text)); // write into serial sd card
-    delay(5000); //delay for 5 seconds to allow nano to read and store data into sd card
-    
+    delay(5000);                      // delay for 5 seconds to allow nano to read and store data into sd card
+
     radio.stopListening();
     digitalWrite(nanoSwitch, LOW);
-    delay(3000); //put a delay window for 3 seconds 
+    delay(3000); // put a delay window for 3 seconds
 
     Serial.flush(); // to clear the serial buffer
   }
@@ -171,5 +174,26 @@ void RF_listenFunction()
   {
     digitalWrite(indicator_led, LOW);
     showOLED("Listening mode...", 2000);
+  }
+}
+
+/**
+ * function for broadcasting/updating user data to the meter unit
+ * under development as of april 15, 2022
+ */
+void RF_broadcastFunction()
+{
+  showOLED("Broadcasting data!", 500);
+  RF_setupBroadcast(); // call setup function to set up sending features
+  loadEEPROM_data();   // loads data from eeprom into a fixed array size of 20 indexes
+
+  for (int x = 0; x < 20; x++)
+  {
+    if (eeprom_passcodes[x] == "")
+    {
+      break;
+    }
+    const char text[] = eeprom_passcodes[x];
+    radio.write(&text, sizeof(text));
   }
 }
