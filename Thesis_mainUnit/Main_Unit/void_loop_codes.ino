@@ -10,15 +10,13 @@ void loop()
   {
     register_mode = HIGH;
     delist_mode = LOW;
-    broadcast_mode = LOW;
-    listen_mode = LOW;
+    // digitalWrite(nanoSwitch, LOW);
   }
   else if (digitalRead(delistButton) == HIGH)
   {
     register_mode = LOW;
     delist_mode = HIGH;
-    broadcast_mode = LOW;
-    listen_mode = LOW;
+    // digitalWrite(nanoSwitch, LOW);
   }
 
   // event handling conditional statements
@@ -38,6 +36,7 @@ void loop()
         function_register();
 
         // write code for broadcast here
+        RF_broadcastFunction();
         break;
       }
       else
@@ -48,6 +47,7 @@ void loop()
 
     // set register mode back into LOW before exiting
     register_mode = LOW;
+    // digitalWrite(nanoSwitch, HIGH);
   }
   else if (delist_mode == HIGH)
   {
@@ -76,6 +76,7 @@ void loop()
 
     // set delist mode back into LOW before exiting
     delist_mode = LOW;
+    // digitalWrite(nanoSwitch, HIGH);
   }
   /**
      default listening mode
@@ -83,7 +84,8 @@ void loop()
   else
   {
     // call the radio listening function
+    // digitalWrite(nanoSwitch, HIGH);
     RF_listenFunction();
-    delay(500);
+    delay(2000);
   }
 }
