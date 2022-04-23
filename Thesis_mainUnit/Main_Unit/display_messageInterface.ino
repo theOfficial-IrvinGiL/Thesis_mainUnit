@@ -1,48 +1,61 @@
 // code for displaying interfaces that only has text/messages is written here: ⋙⋙
 
-/**
- * Message: Main Unit
- */
-void showMainUnit()
+// Indicator LED
+void blink_LED()
 {
-    display.clearDisplay();
-    display.setTextSize(2);
-    display.setTextColor(WHITE);
-    display.setCursor(13, 25);
-    display.println("MAIN UNIT");
-    display.setTextSize(2);
-    display.setTextColor(WHITE);
-    display.display();
-    delay(2000);
-    display.clearDisplay();
+
+  for (int i = 0; i < 10; i++)
+  {
+    digitalWrite(indicator_led, HIGH);
+    delay(50);
+    digitalWrite(indicator_led, LOW);
+    delay(50);
+  }
+
 }
 
+/**
+   Message: Main Unit
+*/
+void showMainUnit()
+{
+  display.clearDisplay();
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
+  display.setCursor(13, 25);
+  display.println("MAIN UNIT");
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
+  display.display();
+  delay(2000);
+  display.clearDisplay();
+}
 
-void showOLED(String message) {
+/**
+  generic function for displaying messages on
+  the oled module
+*/
+void showOLED(String message, int delayCount) {
   display.clearDisplay();
   display.setTextColor(WHITE);
   display.setTextSize(1);
   display.setCursor(2, 2);
   display.print(message);
   display.display();
-  delay(2000);
+  delay(delayCount);
 
 }
-void showNoMessage() {
-  display.clearDisplay();
-  display.setTextColor(WHITE);
-  display.setTextSize(1);
-  display.setCursor(2, 2);
-  display.print("No serial message received");
-  display.display();
 
-}
-void showWrongPass() {
-  display.clearDisplay();
-  display.setTextColor(WHITE);
-  display.setTextSize(1);
-  display.setCursor(2, 2);
-  display.print("Wrong Password!!");
-  display.display();
+// /**
+//   function to show message
+//   on listening mode
+// */
+// void showListeningMessage() {
+//   display.clearDisplay();
+//   display.setTextColor(WHITE);
+//   display.setTextSize(1);
+//   display.setCursor(2, 2);
+//   display.print("Listening Mode . . . . .");
+//   display.display();
 
-}
+// }

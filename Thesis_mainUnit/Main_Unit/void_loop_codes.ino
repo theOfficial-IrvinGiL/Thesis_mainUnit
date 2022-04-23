@@ -1,62 +1,91 @@
 // code for the void loop is written here...
-void loop() {
-  if (digitalRead(registerButton) == HIGH) {
-    register_mode = HIGH;
-    delist_mode = LOW;
-    listen_mode = LOW;
-  }
-  else if (digitalRead(delistButton) == HIGH) {
-    delist_mode = HIGH;
-    register_mode = LOW;
-    listen_mode = LOW;
-  }
-  else if (digitalRead(listenButton) == HIGH) {
-    delist_mode = LOW;
-    register_mode = LOW;
-    listen_mode = HIGH;
-  }
 
-
-
-  if (register_mode == HIGH) {
-    String msg = "Send Serial data to register contact.";
-    showOLED(msg);
-
-    while (Serial.available() == 0) {
-      showOLED("Waiting for Serial Data!!!");
-    }
-    function_register();
-    empty_serialMessages();
-    register_mode = LOW;
-    broadcast_mode = HIGH;
-  }
-
-
-
-  else if (delist_mode == HIGH) {
-    String msg = "Send Serial data to delist a contact.";
-    showOLED(msg);
-    while (Serial.available() == 0) {
-      showOLED("Waiting for Serial Data!!!");
-    }
-    function_delist();
-    empty_serialMessages();
-    delist_mode = LOW;
-  }
+void loop()
+{
 
   /**
-  * skip muna for now
-  */
-  // else if (broadcast_mode == HIGH) {
-  // //put broadcast message here
-  
-
-  // }
-
-  else {
-    showNoMessage();
-
+   * conditional statement for handling detection of buttons
+   */
+  if (digitalRead(registerButton) == HIGH)
+  {
+    register_mode = HIGH;
+    delist_mode = LOW;
+    // digitalWrite(nanoSwitch, LOW);
+  }
+  else if (digitalRead(delistButton) == HIGH)
+  {
+    register_mode = LOW;
+    delist_mode = HIGH;
+    // digitalWrite(nanoSwitch, LOW);
   }
 
+  // event handling conditional statements
+  if (register_mode == HIGH)
+  {
+    unsigned long thisMilis = millis();
+    // write functions to deal with registering new data here
+    while ((millis() - thisMilis) <= 20000)
+    {
+      if (Serial.available() != 0)
+      {
+        /**
+          calls function on process_codes
+           to handle process
+          of registering new user da
+        */
+        function_register();
 
+        // write code for broadcast here
+        RF_broadcastFunction();
+        break;
+      }
+      else
+      {
+        showOLED("Register: Waiting for data!", 2000);
+      }
+    }
+
+    // set register mode back into LOW before exiting
+    register_mode = LOW;
+    // digitalWrite(nanoSwitch, HIGH);
+  }
+  else if (delist_mode == HIGH)
+  {
+    unsigned long thisMilis = millis();
+    // write functions to deal with registering new data here
+    while ((millis() - thisMilis) <= 20000)
+    {
+      if (Serial.available() != 0)
+      {
+        /**
+          calls function on process_codes to handle process
+          of registering new user da
+        */
+        function_delist();
+
+        // write code for broadcast here
+        RF_broadcastFunction();
+
+        break;
+      }
+      else
+      {
+        showOLED("Delist: Waiting for data!", 2000);
+      }
+    }
+
+    // set delist mode back into LOW before exiting
+    delist_mode = LOW;
+    // digitalWrite(nanoSwitch, HIGH);
+  }
+  /**
+     default listening mode
+  */
+  else
+  {
+    // call the radio listening function
+    // digitalWrite(nanoSwitch, HIGH);
+    RF_listenFunction();
+    delay(2000);
+  }
 }
