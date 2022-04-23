@@ -83,9 +83,8 @@ void loop()
   */
   else
   {
-    // call the radio listening function
-    // digitalWrite(nanoSwitch, HIGH);
-    RF_listenFunction();
+    
+    RF_listenFunction();    //call the rf listening function
     delay(2000);
   }
 }

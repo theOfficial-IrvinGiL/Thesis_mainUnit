@@ -154,20 +154,11 @@ void RF_listenFunction()
   if (radio.available())
   {
 
-    /**
-    *char text[32] = "";
-        radio.read(&text, sizeof(text));
-
-        Serial.write(text, sizeof(text));
-        radio.stopListening();  //always close the module to prevent redundancy
-        delay(1000);
-    */
-
-    // digitalWrite(nanoSwitch, HIGH);
-    // delay(2000);
+    // OLED_active = HIGH; // turn on the boolean trigger if there is data received
     sdStart = millis();
     char text[32] = "";
     radio.read(&text, 32); // get value from NRF
+
     showOLED(text, 3000);
     /**
      * write data into I2C communications
@@ -193,11 +184,16 @@ void RF_listenFunction()
 
     Serial.flush(); // to clear the serial buffer
     blink_LED();    // indicator if data recieved
+    // oled_timestamp = millis();
+    showOLED("Listening mode...", 5000);
   }
   else // if there is no message picked on radio buffer, then turn indicator_led off
   {
-    digitalWrite(indicator_led, LOW);
-    showOLED("Listening mode...", 2000);
+    
+      display.clearDisplay();
+      display.display();
+      // oled_timestamp = millis();
+    
   }
 }
 
