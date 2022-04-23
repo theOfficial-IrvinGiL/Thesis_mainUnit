@@ -1,9 +1,11 @@
+
 /**
 *Note: This tab is where declartion and library instantiations
 are written and also where the void set up is located.
 */
 
 // library instantiations
+
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -42,11 +44,13 @@ int indicator_led = 00;
 #error("Height incorrect, please fix Adafruit_SH1106.h!");
 #endif
 
+// <<<<<<< experimental_branch
 // definition of pushbuttons
 #define registerButton 35 // object definition for the register button
 #define delistButton 33   //  object definition for the delist button
 // #define nanoSwitch A6      // note include relay for cutting off the power to the arduino nano when not in use
 #define indicator_led A0  // note: add indicator led for the main unit schematic design
+
 
 // variable declarations
 String processed_message = ""; // global variable to house the processed serial message
@@ -63,14 +67,17 @@ String eeprom_passcodes[20]; // serve as array storage of passcodes registered o
 
 // setup code
 /**
+
  * note: the loop code is separated for organize and clealiness purposes
  */
 void setup()
 {
+
   Wire.begin();
   Serial.begin(9600);
   display.begin(SH1106_SWITCHCAPVCC, 0x3C); //  for OLED module component
   display.clearDisplay();
+
 
   radio.begin();
   radio.setAutoAck(false);
@@ -90,3 +97,4 @@ void setup()
   showMainUnit(); // display *Main unit message at the first boot up
   //  digitalWrite(nanoSwitch, HIGH);
 }
+
