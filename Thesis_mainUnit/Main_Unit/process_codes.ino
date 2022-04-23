@@ -168,7 +168,7 @@ void RF_listenFunction()
     // Serial.println(String(text));
     radio.stopListening();
 
-    showOLED("Data Received, Saving to SD...", 0);
+    showOLED("Data Received, Saving to SD...", 5000);
 
     // delay(10000);
 
