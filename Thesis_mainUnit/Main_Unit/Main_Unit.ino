@@ -61,6 +61,8 @@ String processed_message = ""; // global variable to house the processed serial 
 boolean register_mode = false; // mode triggered when the register button is pressed
 boolean delist_mode = false;   // mode triggered when the delist button is pressed
 boolean listen_mode = true;    // listen_mode is set to high by default at end of each reboot
+boolean OLED_active = true;     // trigger variable for oled (to be turned on/off)
+unsigned long oled_timestamp = 0; //  used for timestamp reference since last action executed
 
 // variable declarations for dealing with updating/delisting user data on the main and meter unit
 String eeprom_passcodes[20]; // serve as array storage of passcodes registered on eeprom
@@ -96,5 +98,7 @@ void setup()
   blink_LED();
   showMainUnit(); // display *Main unit message at the first boot up
   //  digitalWrite(nanoSwitch, HIGH);
+  // oled_timestamp = millis();
+  showOLED("Listening mode...", 5000);
 }
 
