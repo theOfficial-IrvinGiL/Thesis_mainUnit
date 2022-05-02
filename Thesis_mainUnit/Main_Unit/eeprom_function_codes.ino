@@ -85,7 +85,7 @@ String readStringFromEEPROM(int address)
 void loadEEPROM_data()
 {
   int arrayIndex = 0;
-  int eepromCounter = 0;
+  unsigned int eepromCounter = 0;
   // loads the existing passcode data from the eeprom
   for (int x = 0; x < sizeof(eeprom_passcodes); x++)
   {
@@ -104,7 +104,7 @@ void loadEEPROM_data()
     if (eeprom_passcodes[y] == "") // a blank value on the array is detected, the index is given a value of "A"
     {
       eeprom_passcodes[y] = "A"; // the value "A" will be the indicator of the end of the data stream
-      break;
+      // break;
     }
   }
 }

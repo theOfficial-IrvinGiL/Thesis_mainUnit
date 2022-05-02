@@ -1,32 +1,9 @@
 // codes for the computation and calculation processs are written here: ⋙⋙
-
-// void RF_setupListen()
-// {
-//   // For NRF setup for listening
-//   radio.begin();
-//   radio.setAutoAck(false);
-//   SPI.setClockDivider(SPI_CLOCK_DIV4);
-//   radio.setRetries(15, 15);
-
-//   radio.openReadingPipe(0, RF_addresses[1]); // Setting the address at which we will receive the data
-//   radio.setPALevel(RF24_PA_MAX);
-// }
-
-// function for setting up broadcast function
-// void RF_setupBroadcast()
-// {
-
-//   radio.setAutoAck(false);
-//   SPI.setClockDivider(SPI_CLOCK_DIV4);
-//   radio.setRetries(15, 15);
-//   radio.openWritingPipe(RF_addresses[0]);
-//   radio.setPALevel(RF24_PA_MAX);
-//   radio.stopListening();
-// }
-
 /**
- * void function to process the serial data message sent from the android through serial
+ * Note:
+ * - EEPROM is programmed to have a <= 300 address for the systems utilization
  */
+
 void process_message()
 {
   String message = "";
@@ -40,7 +17,7 @@ void process_message()
       showOLED(processed_message, 1000);
 
       message = "";
-      count++;
+      break;
     }
     else if (value == "") // break the loop if there is space on the serial data
     {
@@ -109,7 +86,7 @@ void extract_delist()
   unsigned int target_address = 0;
 
   unsigned int counter = 0;
-  while (counter <= 100)
+  while (counter <= 300)
   {
     eeprom_value = String(readStringFromEEPROM(counter));
     // Serial.println(eeprom_value);
@@ -131,7 +108,7 @@ void extract_delist()
    * if data from serial is not on the system
    * then counter will reach 300
    */
-  if (counter >= 100)
+  if (counter >= 300)
   {
     showOLED("The Data you want to delist is not on the system!", 2000);
     processed_message = "";
@@ -160,27 +137,16 @@ void RF_listenFunction()
     radio.read(&text, 32); // get value from NRF
 
     showOLED(text, 3000);
-    /**
-     * write data into I2C communications
-     */
-    // toSD_I2C(text);
+
+    //  * write data for RF communications
     Serial.write(text, 32);
-    // Serial.println(String(text));
     radio.stopListening();
 
     showOLED("Data Received, Saving to SD...", 5000);
 
     // delay(10000);
-
-    // while (millis() - sdStart <= 5000) // write into serial sd card
-    // {
-    // Serial.write(text, sizeof(text));
-    // }
     radio.flush_rx();
     // delay(3000);                      // delay for 5 seconds to allow nano to read and store data into sd card
-
-    // delay(5000); // put a delay window for 3 seconds
-    // digitalWrite(nanoSwitch, LOW);
 
     Serial.flush(); // to clear the serial buffer
     blink_LED();    // indicator if data recieved
@@ -189,11 +155,10 @@ void RF_listenFunction()
   }
   else // if there is no message picked on radio buffer, then turn indicator_led off
   {
-    
-      display.clearDisplay();
-      display.display();
-      // oled_timestamp = millis();
-    
+
+    display.clearDisplay();
+    display.display();
+    // oled_timestamp = millis();
   }
 }
 
@@ -201,45 +166,22 @@ void RF_listenFunction()
  * function for broadcasting/updating user data to the meter unit
  * under development as of april 15, 2022
  */
-void RF_broadcastFunction()
+void RF_broadcastFunction(String message)
 {
-  showOLED("Broadcasting data!", 500);
-  // RF_setupBroadcast(); // call setup function to set up sending features
-  loadEEPROM_data(); // loads data from eeprom into a fixed array size of 20 indexes
 
-  for (int x = 0; x < 20; x++)
+  // unsigned long broadcastStart = millis();
+  int messageLength = message.length();
+  char data[messageLength];
+
+  /**
+     gets data from global message variable and copies it to data
+     array for sending through RF
+  */
+  for (int x = 0; x < messageLength; x++)
   {
-    if (eeprom_passcodes[x] == "")
-    {
-      break;
-    }
-    else
-    {
-      String passHolder = eeprom_passcodes[x];
-      char text[4];
-      for (int z = 0; z < passHolder.length(); z++)
-      {
-        text[z] = passHolder[z];
-      }
-      //  char text[] = eeprom_passcodes[x];
-      radio.write(&text, sizeof(text));
-    }
+    data[x] = message[x];
   }
-}
 
-/**
- * method to send the data into the arduino via I2C communication
- */
-// void toSD_I2C(String message)
-// {
-//   int mess_lenght = message.length();
-//   char data[mess_lenght];
-//   for (int x = 0; x < mess_lenght; x++)
-//   {
-//     data[x] = message[x];
-//   }
-//   // Write a charatre to the Slave
-//   Wire.beginTransmission(SLAVE_ADDR);
-//   Wire.write(data);
-//   Wire.endTransmission();
-// }
+  radio.write(&data, sizeof(data)); // Sending the data
+  delay(100);
+}
