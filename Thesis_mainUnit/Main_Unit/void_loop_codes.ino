@@ -33,28 +33,14 @@ void loop()
            to handle process
           of registering new user da
         */
+        // String contentIndicator = "";
         radio.stopListening();
         function_register();
 
         // write code for broadcast here
         showOLED("Broadcasting data!", 500);
-        for (int x = 0; x < 20; x++)
-        {
-          String send_pass = readStringFromEEPROM(x * 4);
-          if (send_pass != "")
-          {
-            RF_broadcastFunction(send_pass);
-            delay(100);
-          }
-          else
-          {
-            break;
-          }
-        }
-        for (int x = 0; x < 20; x++)
-        {
-          RF_broadcastFunction("A");
-        } // end of broadcast here
+        broadcast();
+
         break;
       }
       else
@@ -64,7 +50,7 @@ void loop()
     }
     // display.clearDisplay();
     // display.display();
-
+    resetFunc();
     blink_LED();
 
     showOLED("Listening mode...", 5000);
@@ -80,6 +66,7 @@ void loop()
     {
       if (Serial.available() != 0)
       {
+        // String contentIndicator = "";
         /**
           calls function on process_codes to handle process
           of registering new user da
@@ -88,25 +75,8 @@ void loop()
 
         // write code for broadcast here
         showOLED("Broadcasting data!", 500);
-        // write code for broadcast here
-        showOLED("Broadcasting data!", 500);
-        for (int x = 0; x < 20; x++)
-        {
-          String send_pass = readStringFromEEPROM(x * 4);
-          if (send_pass != "")
-          {
-            RF_broadcastFunction(send_pass);
-            delay(100);
-          }
-          else
-          {
-            break;
-          }
-        }
-        for (int x = 0; x < 20; x++)
-        {
-          RF_broadcastFunction("A");
-        } // end of broadcast here
+        // end of broadcast here
+        broadcast();
 
         break;
       }
@@ -115,7 +85,13 @@ void loop()
         showOLED("Delist: Waiting for data!", 2000);
       }
     }
+    for (int x = 0; x < 20; x++)
+    {
+      RF_broadcastFunction("A");
+    }
+    resetFunc();
     blink_LED();
+
     showOLED("Listening mode...", 5000);
     // set delist mode back into LOW before exiting
     delist_mode = LOW;
@@ -126,7 +102,7 @@ void loop()
   */
   else
   {
-
+    Serial.flush();
     RF_listenFunction(); // call the rf listening function
     delay(2000);
   }

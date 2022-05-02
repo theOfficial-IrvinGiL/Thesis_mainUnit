@@ -46,16 +46,4 @@ void showOLED(String message, int delayCount) {
 
 }
 
-// /**
-//   function to show message
-//   on listening mode
-// */
-// void showListeningMessage() {
-//   display.clearDisplay();
-//   display.setTextColor(WHITE);
-//   display.setTextSize(1);
-//   display.setCursor(2, 2);
-//   display.print("Listening Mode . . . . .");
-//   display.display();
 
-// }

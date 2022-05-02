@@ -55,6 +55,7 @@ boolean listen_mode = false;
 // array used to hold loaded data from the eeprom memory
 String eeprom_passcodes [20]; //limitted for 20 user passcodes
 // String sendThis_to [] = {"benjie", "mark neil", "irvin"};
+//reset function
 
 
 //setup code
@@ -91,4 +92,5 @@ void setup() {
   showOLED("Listening mode...", 2000);
 
 }
+void (*resetFunc) (void) = 0;
 

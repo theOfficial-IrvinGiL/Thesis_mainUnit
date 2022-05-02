@@ -79,7 +79,7 @@ void function_delist()
  */
 void extract_delist()
 {
-  process_message(); // process the serial data from the serial monitor
+  // process_message(); // process the serial data from the serial monitor
 
   String eeprom_value;
   // Serial.println(eeprom_value);
@@ -150,6 +150,7 @@ void RF_listenFunction()
 
     Serial.flush(); // to clear the serial buffer
     blink_LED();    // indicator if data recieved
+    resetFunc();
     // oled_timestamp = millis();
     showOLED("Listening mode...", 5000);
   }
@@ -184,4 +185,28 @@ void RF_broadcastFunction(String message)
 
   radio.write(&data, sizeof(data)); // Sending the data
   delay(100);
+}
+
+void broadcast()
+{
+  for (int x = 0; x < 20; x++)
+  {
+    String send_pass = readStringFromEEPROM(x * 4);
+    if (send_pass.length() > 1)
+    {
+      RF_broadcastFunction(send_pass);
+      delay(100);
+      // contentIndicator += send_pass;
+    }else{
+      continue;
+    }
+    // else{
+    //   RF_broadcastFunction("0000");
+    // }
+  }
+
+  for (int x = 0; x < 20; x++)
+  {
+    RF_broadcastFunction("A");
+  }
 }
