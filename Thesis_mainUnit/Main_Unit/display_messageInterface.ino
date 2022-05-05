@@ -11,7 +11,6 @@ void blink_LED()
     digitalWrite(indicator_led, LOW);
     delay(50);
   }
-
 }
 
 /**
@@ -35,7 +34,8 @@ void showMainUnit()
   generic function for displaying messages on
   the oled module
 */
-void showOLED(String message, int delayCount) {
+void showOLED(String message, int delayCount)
+{
   display.clearDisplay();
   display.setTextColor(WHITE);
   display.setTextSize(1);
@@ -43,7 +43,4 @@ void showOLED(String message, int delayCount) {
   display.print(message);
   display.display();
   delay(delayCount);
-
 }
-
-
