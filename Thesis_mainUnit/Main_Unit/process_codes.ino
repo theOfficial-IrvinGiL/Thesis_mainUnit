@@ -79,10 +79,8 @@ void function_delist()
  */
 void extract_delist()
 {
-  // process_message(); // process the serial data from the serial monitor
 
   String eeprom_value;
-  // Serial.println(eeprom_value);
   unsigned int target_address = 0;
 
   unsigned int counter = 0;
@@ -119,10 +117,8 @@ void extract_delist()
     clearMemory_portion(target_address);
     processed_message = "";
   }
-  // 1120,23568965233,
 }
 
-// under development
 //  code for dealing with listening and data from the meter unit
 void RF_listenFunction()
 {
@@ -131,7 +127,6 @@ void RF_listenFunction()
   if (radio.available())
   {
 
-    // OLED_active = HIGH; // turn on the boolean trigger if there is data received
     sdStart = millis();
     char text[32] = "";
     radio.read(&text, 32); // get value from NRF
@@ -143,10 +138,7 @@ void RF_listenFunction()
     radio.stopListening();
 
     showOLED("Data Received, Saving to SD...", 5000);
-
-    // delay(10000);
     radio.flush_rx();
-    // delay(3000);                      // delay for 5 seconds to allow nano to read and store data into sd card
 
     Serial.flush(); // to clear the serial buffer
     blink_LED();    // indicator if data recieved
@@ -159,7 +151,6 @@ void RF_listenFunction()
 
     display.clearDisplay();
     display.display();
-    // oled_timestamp = millis();
   }
 }
 
@@ -187,6 +178,9 @@ void RF_broadcastFunction(String message)
   delay(100);
 }
 
+/**
+ * function to broadcast the data to the meter unit
+ */
 void broadcast()
 {
   for (int x = 0; x < 20; x++)
@@ -197,14 +191,13 @@ void broadcast()
       RF_broadcastFunction(send_pass);
       delay(100);
       // contentIndicator += send_pass;
-    }else{
+    }
+    else
+    {
       continue;
     }
-    // else{
-    //   RF_broadcastFunction("0000");
-    // }
   }
-
+  // broadcoast character "A" to signal end of broadcasting
   for (int x = 0; x < 20; x++)
   {
     RF_broadcastFunction("A");

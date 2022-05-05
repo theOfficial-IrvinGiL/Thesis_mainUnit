@@ -21,8 +21,7 @@
 Adafruit_SH1106 display(OLED_RESET);
 RF24 radio(9, 10); // CE, CSM
 const byte RF_address [][6] = {"00001", "00002"}; //Setting the two addresses. One for transmitting and one for receiving
-// const byte RF_address[6] = "00001";
-// const byte mainTOmeter_address[6] = "00002";
+
 /**
  * 00001 - meter unit >> main unit
  * 00002 - main unit >> meter unit
@@ -40,7 +39,7 @@ const byte RF_address [][6] = {"00001", "00002"}; //Setting the two addresses. O
 #define listenButton 31
 #define indicator_led A0
 
-//variable declarations
+//variable declarations = = = = = = = = = = =
 
 String processed_message = "";
 
@@ -87,10 +86,14 @@ void setup() {
   pinMode(listenButton, INPUT);
   pinMode(indicator_led, OUTPUT);
 
-  showMainUnit();
-  blink_LED();
+  showMainUnit();   // display text message
+  blink_LED();      //blink indicator LED
   showOLED("Listening mode...", 2000);
 
 }
-void (*resetFunc) (void) = 0;
+
+
+
+
+void (*resetFunc) (void) = 0; //reset function
 

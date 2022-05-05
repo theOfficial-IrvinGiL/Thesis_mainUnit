@@ -33,7 +33,6 @@ void loop()
            to handle process
           of registering new user da
         */
-        // String contentIndicator = "";
         radio.stopListening();
         function_register();
 
@@ -48,8 +47,7 @@ void loop()
         showOLED("Register: Waiting for data!", 2000);
       }
     }
-    // display.clearDisplay();
-    // display.display();
+
     resetFunc();
     blink_LED();
 
@@ -66,7 +64,6 @@ void loop()
     {
       if (Serial.available() != 0)
       {
-        // String contentIndicator = "";
         /**
           calls function on process_codes to handle process
           of registering new user da
@@ -95,8 +92,9 @@ void loop()
     showOLED("Listening mode...", 5000);
     // set delist mode back into LOW before exiting
     delist_mode = LOW;
-    // digitalWrite(nanoSwitch, HIGH);
+    
   }
+  
   /**
      default listening mode
   */
